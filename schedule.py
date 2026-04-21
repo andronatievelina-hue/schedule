@@ -4,6 +4,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKe
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
+from database import init_db, save_user
 
 # ==================== КОНФИГУРАЦИЯ ====================
 TOKEN = os.getenv("BOT_TOKEN")
@@ -76,6 +77,11 @@ def get_cancel_keyboard():
 
 # ==================== ХЭНДЛЕРЫ ====================
 async def start(update: Update, context):
+    user = update.effective_user
+    user_id = user.id
+    username = user.username
+    first_name = user.first_name
+    save_user(user_id, username, first_name)
     await update.message.reply_text(
         f"👋 Привет! Я бот класса «10Б».\n\n"
         f"Нажми «📅 Расписание», выбери день, а затем предмет,\n"
@@ -271,6 +277,7 @@ async def cancel(update: Update, context):
 
 # ==================== ОСНОВНОЙ ЗАПУСК ====================
 def main():
+    init_db()
     app = Application.builder().token(TOKEN).build()
     
     app.add_handler(CommandHandler("start", start))
