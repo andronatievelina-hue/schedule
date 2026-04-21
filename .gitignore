@@ -4,6 +4,7 @@
 schedule_data.json
 
 __pycache__/
+schedule.db
 *.pyc
 .DS_Store
 Thumbs.db
